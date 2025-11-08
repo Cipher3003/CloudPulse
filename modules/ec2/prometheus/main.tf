@@ -4,6 +4,10 @@ resource "aws_instance" "prometheus" {
     tags = {
       Name = var.ec2_prometheus_name
     }
-    user_data = file("../../scripts/prometheus.sh")
+    user_data = templatefile("../../scripts/prometheus.sh",{
+      s3_bucket_name = var.s3_bucket_name
+      Node_Exp_Version = var.Node_Exp_Version
+      Prometheus_Version = var.Prometheus_Version
+    })
     key_name = "cloudpulse"
 }

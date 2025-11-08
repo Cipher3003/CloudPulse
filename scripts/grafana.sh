@@ -1,30 +1,25 @@
 #!/bin/bash
 set -eux
 
-# 1. Install dependencies (wget)
+# Install dependencies
 if command -v yum &>/dev/null; then
-  yum install -y wget
+  yum install -y wget awscli jq
 elif command -v apt-get &>/dev/null; then
-  apt-get update && apt-get install -y wget
+  apt-get update && apt-get install -y wget awscli jq
 fi
 
-# 2. Set Grafana version
-G_VER="11.2.2"
-
-# 3. Download & extract Grafana
+# Download & setup Grafana
 mkdir -p /opt/grafana
 cd /opt/grafana
-wget https://dl.grafana.com/oss/release/grafana-${G_VER}.linux-amd64.tar.gz
-tar -xzf grafana-${G_VER}.linux-amd64.tar.gz --strip-components=1
-rm grafana-${G_VER}.linux-amd64.tar.gz
+wget https://dl.grafana.com/oss/release/grafana-${Grafana_Version}.linux-amd64.tar.gz
+tar -xzf grafana-${Grafana_Version}.linux-amd64.tar.gz --strip-components=1
+rm grafana-${Grafana_Version}.linux-amd64.tar.gz
 
-# 4. Create grafana user if not exists
+# Create grafana user
 id -u grafana &>/dev/null || useradd --no-create-home --shell /bin/false grafana
-
-# 5. Set permissions
 chown -R grafana:grafana /opt/grafana
 
-# 6. Create systemd service
+# Systemd service
 cat > /etc/systemd/system/grafana.service <<EOF
 [Unit]
 Description=Grafana
@@ -45,34 +40,31 @@ EOF
 systemctl daemon-reload
 systemctl enable --now grafana
 
-# 7. Wait for Grafana to start
-sleep 10
+# Wait for Grafana
+sleep 15
 
-# 8. Get private IP of instance
-PROM_IP=\$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
-
-# 9. Create Prometheus datasource JSON
+# Create Grafana datasource JSON
 cat > /tmp/datasource.json <<EOF
 {
   "name": "Prometheus",
-  "type": "prometheus",
+  "type": "Prometheus",
   "access": "proxy",
-  "url": "http://\${PROM_IP}:9090",
+  "url": "http://${prometheus_ip}:9090",
   "basicAuth": false,
   "isDefault": true
 }
 EOF
 
-# 10. Send datasource to Grafana API
+# Add datasource via API
 for i in {1..10}; do
   if curl -s -X POST -H "Content-Type: application/json" \
     -d @/tmp/datasource.json \
     http://admin:admin@localhost:3000/api/datasources; then
-    echo "Datasource created"
+    echo "✅ Datasource created successfully."
     break
   fi
   echo "Waiting for Grafana to be ready..."
   sleep 5
 done
 
-echo "✅ Grafana installed and Prometheus datasource added (admin/admin)."
+echo "✅ Grafana installed and dynamically connected to Prometheus."

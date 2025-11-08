@@ -26,5 +26,15 @@ variable "s3_bucket_name" {
   type = string
 }
 
+variable "Node_Exp_Version" {
+  type = string
+}
 
+variable "Prometheus_Version" {
+  type = string
+}
+
+variable "Grafana_Version" {
+  type = string
+}
   

@@ -9,3 +9,11 @@ variable "ec2_grafana_ami" {
 variable "ec2_grafana_instance_type" {
   type = string
 }
+
+variable "prometheus_private_ip" {
+  type = string
+}
+
+variable "Grafana_Version" {
+  type = string
+}
