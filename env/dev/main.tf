@@ -3,6 +3,7 @@ module "ec2_grafana" {
     ec2_grafana_name = var.ec2_grafana_name
     ec2_grafana_ami = var.ec2_grafana_ami
     ec2_grafana_instance_type = var.ec2_grafana_instance_type
+    depends_on = [ module.ec2_prometheus ]
 }
 
 module "ec2_prometheus" {
@@ -23,7 +24,7 @@ module "vpc_default" {
 
 module "security_gp" {
     source = "../../modules/security_gp"
-    vpc_id = data.vpc_default.vpc_id
+    vpc_id = module.vpc_default.vpc_id
 }
 
 module "iam" {

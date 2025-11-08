@@ -4,4 +4,7 @@ resource "aws_instance" "grafana" {
     tags = {
       Name = var.ec2_grafana_name
     }
+    user_data = file("../../scripts/grafana.sh")
+
+    key_name = "cloudpulse"
 }

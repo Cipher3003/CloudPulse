@@ -1,6 +1,6 @@
 resource "aws_iam_role" "ec2_s3_role" {
   name = "ec2_s3_role"
-  assume_role_policy = jsondecode({
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
         {
@@ -16,20 +16,22 @@ resource "aws_iam_role" "ec2_s3_role" {
 
 resource "aws_iam_policy" "s3_access_policy" {
   name = "s3_access_policy"
-  policy = jsondecode({
+  policy = jsonencode({
     Version = "2012-10-17"
-    Statement = {
+    Statement = [
+      {
         Effect = "Allow"
         Action = [
             "s3:GetObject",
             "s3:PutObject",
-            "s3:ListObject"
+            "s3:ListBucket"
         ]
         Resource = [
             "arn:aws:s3:::${var.s3_bucket_name}",
             "arn:aws:s3:::${var.s3_bucket_name}/*"
         ]
-    }
+      }
+    ]
   })
 }
 
