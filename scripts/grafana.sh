@@ -1,21 +1,21 @@
 #!/bin/bash
 set -eux
 
-# Install dependencies
+# 1. Install dependencies
 if command -v yum &>/dev/null; then
-  yum install -y wget awscli jq
+  yum install -y wget
 elif command -v apt-get &>/dev/null; then
-  apt-get update && apt-get install -y wget awscli jq
+  apt-get update && apt-get install -y wget
 fi
 
-# Download & setup Grafana
+# Install Grafana
 mkdir -p /opt/grafana
 cd /opt/grafana
 wget https://dl.grafana.com/oss/release/grafana-${Grafana_Version}.linux-amd64.tar.gz
 tar -xzf grafana-${Grafana_Version}.linux-amd64.tar.gz --strip-components=1
 rm grafana-${Grafana_Version}.linux-amd64.tar.gz
 
-# Create grafana user
+# Create user & permissions
 id -u grafana &>/dev/null || useradd --no-create-home --shell /bin/false grafana
 chown -R grafana:grafana /opt/grafana
 
@@ -38,33 +38,21 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable --now grafana
+systemctl enable grafana
 
-# Wait for Grafana
-sleep 15
-
-# Create Grafana datasource JSON
-cat > /tmp/datasource.json <<EOF
-{
-  "name": "Prometheus",
-  "type": "Prometheus",
-  "access": "proxy",
-  "url": "http://${prometheus_ip}:9090",
-  "basicAuth": false,
-  "isDefault": true
-}
+# Provisioning configuration
+mkdir -p /opt/grafana/conf/provisioning/datasources
+cat > /opt/grafana/conf/provisioning/datasources/prometheus.yml <<EOF
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://${prometheus_ip}:9090
+    isDefault: true
 EOF
 
-# Add datasource via API
-for i in {1..10}; do
-  if curl -s -X POST -H "Content-Type: application/json" \
-    -d @/tmp/datasource.json \
-    http://admin:admin@localhost:3000/api/datasources; then
-    echo "✅ Datasource created successfully."
-    break
-  fi
-  echo "Waiting for Grafana to be ready..."
-  sleep 5
-done
+# Start Grafana
+systemctl start grafana
 
-echo "✅ Grafana installed and dynamically connected to Prometheus."
+echo "Grafana installed and Prometheus datasource provisioned at http://${prometheus_ip}:9090"
