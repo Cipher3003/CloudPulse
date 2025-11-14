@@ -20,12 +20,7 @@ Before running CloudPulse, ensure the following components are ready:
 ### **1. AWS Setup**
 - AWS Account
 - IAM Role for GitHub OIDC
-- EC2 Instances
-  - Prometheus instance
-  - Grafana instance
-- Security Groups for inbound/outbound control
-- S3 bucket (optional, if storing logs/metrics)
-- Custom VPC with subnets (optional)
+- "terraform-tfstate-202526" S3 bucket to store the terraform.tfstate file
 
 ### **2. GitHub Repository**
 - Source code hosted on GitHub
@@ -60,8 +55,8 @@ CloudPulse uses **GitHub Actions OIDC** to allow workflows to assume a role with
    - `token.actions.githubusercontent.com`
 4. Specify:
    - GitHub Organization
-   - Repository (optional)
-   - Branch (optional)
+   - Repository
+   - Branch 
 5. Skip permissions for now → Create role
 
 ### **Step 3 — Add Permissions to the Role**
@@ -169,7 +164,7 @@ steps:
     uses: aws-actions/configure-aws-credentials@v4
     with:
       role-to-assume: arn:aws:iam::ACCOUNT_ID:role/YOUR_OIDC_ROLE
-      aws-region: ap-south-1
+      aws-region: eu-north-1
 ```
 
 Your workflow can now deploy without secrets.
