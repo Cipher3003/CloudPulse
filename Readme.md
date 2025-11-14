@@ -132,6 +132,7 @@ Below is the custom IAM policy to attach to the role created for GitHub OIDC:
         "iam:DetachRolePolicy",
         "iam:PassRole",
         "iam:GetRole",
+        "iam:GetPolicy:,
         "iam:ListAttachedRolePolicies",
         "iam:ListRolePolicies",
         "iam:CreatePolicy",
