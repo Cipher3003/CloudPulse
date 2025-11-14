@@ -97,56 +97,58 @@ Below is the custom IAM policy to attach to the role created for GitHub OIDC:
 
 ```json
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:*",
-        "s3:*",
-        "ec2:Describe*",
-        "ec2:CreateVpc",
-        "ec2:CreateSubnet",
-        "ec2:CreateRouteTable",
-        "ec2:AssociateRouteTable",
-        "ec2:CreateInternetGateway",
-        "ec2:AttachInternetGateway",
-        "ec2:ModifyVpcAttribute",
-        "ec2:CreateSecurityGroup",
-        "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:AuthorizeSecurityGroupEgress",
-        "ec2:RevokeSecurityGroupIngress",
-        "ec2:RevokeSecurityGroupEgress",
-        "ec2:DeleteSecurityGroup"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "iam:CreateRole",
-        "iam:DeleteRole",
-        "iam:PutRolePolicy",
-        "iam:DeleteRolePolicy",
-        "iam:AttachRolePolicy",
-        "iam:DetachRolePolicy",
-        "iam:PassRole",
-        "iam:GetRole",
-        "iam:GetPolicy:,
-        "iam:ListAttachedRolePolicies",
-        "iam:ListRolePolicies",
-        "iam:CreatePolicy",
-        "iam:DeletePolicy",
-        "iam:CreatePolicyVersion",
-        "iam:DeletePolicyVersion",
-        "iam:CreateInstanceProfile",
-        "iam:DeleteInstanceProfile",
-        "iam:AddRoleToInstanceProfile",
-        "iam:RemoveRoleFromInstanceProfile"
-      ],
-      "Resource": "*"
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*",
+                "s3:*",
+                "ec2:Describe*",
+                "ec2:CreateVpc",
+                "ec2:CreateSubnet",
+                "ec2:CreateRouteTable",
+                "ec2:AssociateRouteTable",
+                "ec2:CreateInternetGateway",
+                "ec2:AttachInternetGateway",
+                "ec2:ModifyVpcAttribute",
+                "ec2:CreateSecurityGroup",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:DeleteSecurityGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:PassRole",
+                "iam:GetRole",
+                "iam:GetPolicy",
+                "iam:GetInstanceProfile",
+                "iam:GetPolicyVersion",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListRolePolicies",
+                "iam:CreatePolicy",
+                "iam:DeletePolicy",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:CreateInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:AddRoleToInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile"
+            ],
+            "Resource": "*"
+        }
+    ]
 }
 ```
 
