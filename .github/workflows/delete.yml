@@ -1,0 +1,36 @@
+name: Terraform delete
+
+on:
+    workflow_dispatch:
+
+jobs:
+    delete:
+        name: Delete-infra
+        runs-on: ubuntu-latest
+
+        env:
+            aws_region: eu-north-1
+            work_dir: env/dev
+        
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: arn:aws:iam::354918411148:role/github-actions-role
+                aws-region: ${{env.aws_region}}
+            
+            - name: Setup terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: 1.8.5
+            
+            - name: Initialize terraform
+              working-directory: ${{env.work_dir}}
+              run: terraform init
+
+            - name: Terraform destroy
+              working-directory: ${{env.work_dir}}
+              run: terraform destroy -auto-approve
